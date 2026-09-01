@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { slugify } from "@/lib/slugify";
 
 type MenuItem = {
@@ -44,21 +47,29 @@ export function MenuSection() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {menuItems.map((item) => (
-              <Link key={item.title} href={`/cocktails#${slugify(item.title)}`} className="block">
-                <div className="group relative aspect-4/5 rounded-md overflow-hidden gold-border bg-surface-container">
-                  <Image
-                    src={item.src}
-                    alt={item.title}
-                    fill
-                    className="object-cover transition-transform duration-700 will-change-transform transform-gpu group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text-primary font-serif italic text-2xl">{item.title}</p>
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: (index % 3) * 0.1 }}
+              >
+                <Link href={`/cocktails#${slugify(item.title)}`} className="block">
+                  <div className="group relative aspect-4/5 rounded-md overflow-hidden gold-border bg-surface-container">
+                    <Image
+                      src={item.src}
+                      alt={item.title}
+                      fill
+                      className="object-cover transition-transform duration-700 will-change-transform transform-gpu group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                      <p className="text-primary font-serif italic text-2xl">{item.title}</p>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </motion.div>
             ))}
           </div>
 

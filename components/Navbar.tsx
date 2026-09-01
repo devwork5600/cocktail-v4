@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { useLenis } from "lenis/react";
 
 const navLinks = [
   { name: "L'Univers", href: "/#universe" },
@@ -12,6 +14,27 @@ const navLinks = [
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    lenis?.stop();
+    const scrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      window.scrollTo(0, scrollY);
+      lenis?.start();
+    };
+  }, [isMenuOpen, lenis]);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
@@ -47,34 +70,51 @@ export function Navbar() {
             aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={isMenuOpen}
           >
-            <span className="w-6 h-0.5 bg-primary block rounded-full" />
-            <span className="w-6 h-0.5 bg-primary block rounded-full" />
-            <span className="w-6 h-0.5 bg-primary block rounded-full" />
+            <motion.span
+              animate={isMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              className="w-6 h-0.5 bg-primary block rounded-full"
+            />
+            <motion.span
+              animate={isMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+              className="w-6 h-0.5 bg-primary block rounded-full"
+            />
+            <motion.span
+              animate={isMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              className="w-6 h-0.5 bg-primary block rounded-full"
+            />
           </button>
         </div>
       </nav>
 
-      {isMenuOpen && (
-        <div className="bg-surface border-b border-outline-variant/20 p-8 lg:hidden flex flex-col gap-8 shadow-2xl">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="text-headline-md text-on-surface hover:text-primary transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link
-            href="/#privatization"
-            onClick={() => setIsMenuOpen(false)}
-            className="gold-gradient text-on-primary font-sans text-sm font-bold uppercase tracking-widest px-8 py-4 rounded-md shadow-lg w-full text-center block"
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="bg-surface border-b border-outline-variant/20 p-8 lg:hidden flex flex-col gap-8 shadow-2xl"
           >
-            Réserver une table
-          </Link>
-        </div>
-      )}
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-headline-md text-on-surface hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <Link
+              href="/#privatization"
+              onClick={() => setIsMenuOpen(false)}
+              className="gold-gradient text-on-primary font-sans text-sm font-bold uppercase tracking-widest px-8 py-4 rounded-md shadow-lg w-full text-center block"
+            >
+              Réserver une table
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
