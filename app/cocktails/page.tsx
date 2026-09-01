@@ -155,7 +155,13 @@ export default function CocktailsPage() {
                   className="relative"
                   style={{ width: CURSOR_SIZE, height: CURSOR_SIZE }}
                 >
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    sizes={`${CURSOR_SIZE}px`}
+                    className="object-cover"
+                  />
                   <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 text-center">
                     <p className="text-primary font-serif italic text-lg leading-tight">
@@ -239,7 +245,7 @@ export default function CocktailsPage() {
                         <div className="flex flex-col gap-2">
                           <div className="flex justify-between items-baseline gap-4">
                             <div className="flex items-baseline gap-4">
-                              <span className="text-primary font-sans text-sm font-medium opacity-50 group-hover:opacity-100 transition-opacity">
+                              <span className="text-primary font-sans text-sm font-medium opacity-60 group-hover:opacity-100 transition-opacity">
                                 {displayIndex}
                               </span>
                               <h3 className="font-serif text-3xl text-on-surface group-hover:text-primary transition-colors duration-300">
@@ -254,7 +260,7 @@ export default function CocktailsPage() {
                           <p className="text-body-md text-on-surface-variant font-light leading-relaxed max-w-2xl italic mb-1">
                             {item.description}
                           </p>
-                          <p className="text-[12px] font-sans text-on-surface-variant/60 uppercase tracking-widest leading-relaxed">
+                          <p className="text-[12px] font-sans text-on-surface-variant/70 uppercase tracking-widest leading-relaxed">
                             {item.ingredients}
                           </p>
                         </div>
