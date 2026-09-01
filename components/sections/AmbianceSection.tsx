@@ -66,7 +66,8 @@ export function AmbianceSection() {
 
         <div
           ref={trackRef}
-          className="flex gap-4 md:gap-8 pl-6 md:pl-20 w-max max-w-full overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none"
+          data-lenis-prevent
+          className="flex gap-4 md:gap-8 pl-6 md:pl-20 w-max max-w-full overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar"
         >
           {images.map((image) => (
             <div
