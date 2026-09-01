@@ -78,6 +78,7 @@ export function AmbianceSection() {
                 src={image.src}
                 alt={image.alt}
                 fill
+                sizes="(min-width: 768px) 500px, 280px"
                 className="object-cover transition-transform duration-700 will-change-transform transform-gpu group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
