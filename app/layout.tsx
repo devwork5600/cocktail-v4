@@ -16,6 +16,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://cocktail-v4.vercel.app"),
   title: "L'Élixir Doré",
   description: "Bar à cocktails à Paris",
 };
