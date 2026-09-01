@@ -22,11 +22,11 @@ export function AmbianceSection() {
         </div>
       </div>
 
-      <div className="flex gap-4 md:gap-8 px-6 md:px-20 w-max max-w-full overflow-x-auto">
+      <div className="flex gap-4 md:gap-8 px-6 md:px-20 w-max max-w-full overflow-x-auto snap-x snap-mandatory">
         {images.map((image) => (
           <div
             key={image.src}
-            className="relative h-87.5 w-70 md:h-112.5 md:w-125 shrink-0 overflow-hidden rounded-2xl group border border-outline-variant/20 shadow-2xl"
+            className="relative h-87.5 w-70 md:h-112.5 md:w-125 shrink-0 snap-center overflow-hidden rounded-2xl group border border-outline-variant/20 shadow-2xl"
           >
             <Image
               src={image.src}
@@ -42,6 +42,13 @@ export function AmbianceSection() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 mt-8 md:mt-12 w-full flex md:hidden">
+        <div className="flex items-center gap-4 text-on-surface-variant">
+          <span className="text-[10px] uppercase tracking-[0.5em]">Glissez pour explorer</span>
+          <div className="w-12 h-px bg-on-surface-variant/20" />
+        </div>
       </div>
     </section>
   );
