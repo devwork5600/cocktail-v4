@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export function HeroSection() {
   return (
@@ -16,7 +19,12 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-4xl">
-        <div className="flex flex-col gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col gap-6"
+        >
           <span className="text-label-caps text-primary tracking-[0.4em]">
             Une Expérience Sensorielle Unique
           </span>
@@ -37,15 +45,20 @@ export function HeroSection() {
               Explorer la carte
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.5 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
+      >
         <span className="text-label-caps text-[10px] text-on-surface-variant opacity-50">
           Scroll
         </span>
         <div className="w-px h-12 bg-linear-to-b from-primary to-transparent" />
-      </div>
+      </motion.div>
     </section>
   );
 }
