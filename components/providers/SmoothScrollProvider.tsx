@@ -2,10 +2,6 @@
 
 import { ReactLenis, useLenis } from "lenis/react";
 import { useEffect, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenis = useLenis();
@@ -13,20 +9,6 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!lenis) return;
     lenis.start();
-    // Keep GSAP ScrollTrigger (pin/scrub) in sync with Lenis's virtual scroll position.
-    lenis.on("scroll", ScrollTrigger.update);
-    return () => {
-      lenis.off("scroll", ScrollTrigger.update);
-    };
-  }, [lenis]);
-
-  useEffect(() => {
-    function raf(time: number) {
-      lenis?.raf(time * 1000);
-    }
-    gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
-    return () => gsap.ticker.remove(raf);
   }, [lenis]);
 
   return (

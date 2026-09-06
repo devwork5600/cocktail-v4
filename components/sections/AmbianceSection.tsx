@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const images = [
   { src: "/ambiance/ambiance2.jpeg", alt: "L'Artisanat" },
@@ -17,43 +14,45 @@ const images = [
 ];
 
 export function AmbianceSection() {
-  const pinRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollRange, setScrollRange] = useState(0);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      ScrollTrigger.matchMedia({
-        "(min-width: 768px)": () => {
-          if (!pinRef.current || !trackRef.current) return;
-          const track = trackRef.current;
-          const distance = track.scrollWidth - document.documentElement.clientWidth;
-          if (distance <= 0) return;
+    const calculateScrollRange = () => {
+      if (!trackRef.current) return;
+      const isDesktop = window.innerWidth >= 768;
+      // data-lenis-prevent lets native touch/wheel scrolling through for the
+      // mobile overflow-x-auto track. On desktop the track isn't a scroll
+      // container, so leaving the attribute on there makes Lenis skip
+      // smoothing for wheel input over it — the images fill most of the
+      // screen during the pin, so that's most of the scroll gesture, causing
+      // the disconnected/jerky ("dans le vent") scroll on exit and re-entry.
+      trackRef.current.toggleAttribute("data-lenis-prevent", !isDesktop);
 
-          gsap.to(track, {
-            x: -distance,
-            ease: "none",
-            scrollTrigger: {
-              trigger: pinRef.current,
-              start: "top top",
-              end: () => `+=${distance}`,
-              scrub: true,
-              pin: true,
-              invalidateOnRefresh: true,
-            },
-          });
-        },
-      });
-    });
+      if (!isDesktop) {
+        setScrollRange(0);
+        return;
+      }
+      const range = trackRef.current.scrollWidth - document.documentElement.clientWidth;
+      setScrollRange(range > 0 ? range : 0);
+    };
 
-    return () => ctx.revert();
+    calculateScrollRange();
+    window.addEventListener("resize", calculateScrollRange);
+    return () => window.removeEventListener("resize", calculateScrollRange);
   }, []);
 
+  // Native CSS position: sticky drives the pin — unlike GSAP's ScrollTrigger
+  // pin (which toggles position via a JS scroll-event handler), it stays in
+  // lockstep with Lenis's virtual scroll with zero risk of a one-frame lag
+  // at the pin's entry/exit, which is what caused the stutter.
+  const { scrollYProgress } = useScroll({ target: sectionRef });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollRange]);
+
   return (
-    <section className="relative bg-surface">
-      <div
-        ref={pinRef}
-        className="md:h-screen flex flex-col justify-center py-24 md:py-0 overflow-hidden"
-      >
+    <section ref={sectionRef} className="relative bg-surface md:h-[300vh]">
+      <div className="md:sticky md:top-0 md:h-screen flex flex-col justify-center py-24 md:py-0 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 mb-8 md:mb-12 w-full">
           <div className="flex flex-col gap-4">
             <span className="text-label-caps text-primary tracking-[0.3em]">L&apos;Atmosphère</span>
@@ -64,9 +63,9 @@ export function AmbianceSection() {
           </div>
         </div>
 
-        <div
+        <motion.div
           ref={trackRef}
-          data-lenis-prevent
+          style={{ x }}
           className="flex gap-4 md:gap-8 pl-6 md:pl-20 w-max max-w-full overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none no-scrollbar"
         >
           {images.map((image) => (
@@ -90,7 +89,7 @@ export function AmbianceSection() {
             </div>
           ))}
           <div className="w-2 md:w-12 shrink-0" aria-hidden="true" />
-        </div>
+        </motion.div>
 
         <div className="max-w-7xl mx-auto px-6 sm:px-10 mt-8 md:mt-12 w-full flex md:hidden">
           <div className="flex items-center gap-4 text-on-surface-variant">
