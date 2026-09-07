@@ -22,13 +22,14 @@ export function AmbianceSection() {
     const calculateScrollRange = () => {
       if (!trackRef.current) return;
       const isDesktop = window.innerWidth >= 768;
-      // data-lenis-prevent lets native touch/wheel scrolling through for the
-      // mobile overflow-x-auto track. On desktop the track isn't a scroll
-      // container, so leaving the attribute on there makes Lenis skip
-      // smoothing for wheel input over it — the images fill most of the
-      // screen during the pin, so that's most of the scroll gesture, causing
-      // the disconnected/jerky ("dans le vent") scroll on exit and re-entry.
-      trackRef.current.toggleAttribute("data-lenis-prevent", !isDesktop);
+      // data-lenis-prevent-horizontal only blocks Lenis for events whose
+      // delta is horizontal-dominant (Lenis computes this per-event), so the
+      // mobile overflow-x-auto track's native swipe/drag stays uninterrupted
+      // while vertical wheel/touch scroll over the same element still gets
+      // smoothed by Lenis. A blanket data-lenis-prevent would block both
+      // orientations, causing the same disconnected/jerky ("dans le vent")
+      // scroll on entry/exit that the desktop pin had, just on this branch.
+      trackRef.current.toggleAttribute("data-lenis-prevent-horizontal", !isDesktop);
 
       if (!isDesktop) {
         setScrollRange(0);
