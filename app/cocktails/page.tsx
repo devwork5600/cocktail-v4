@@ -91,7 +91,6 @@ const CURSOR_SIZE = 200;
 
 export default function CocktailsPage() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const quickX = useRef<gsap.QuickToFunc | null>(null);
   const quickY = useRef<gsap.QuickToFunc | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState(0);
@@ -111,15 +110,6 @@ export default function CocktailsPage() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
-
-  useEffect(() => {
-    if (!trackRef.current) return;
-    gsap.to(trackRef.current, {
-      y: -hoveredIndex * CURSOR_SIZE,
-      duration: 0.4,
-      ease: "cubic-bezier(0.76, 0, 0.24, 1)",
-    });
-  }, [hoveredIndex]);
 
   return (
     <div className="flex flex-col min-h-screen bg-surface">
@@ -148,7 +138,11 @@ export default function CocktailsPage() {
               up overflow-hidden, since transform + overflow-hidden on the same animated
               element can desync (visible mostly in Firefox) and briefly paint unclipped. */}
           <div className="w-full h-full overflow-hidden [contain:paint] rounded-xl border border-primary/20 shadow-2xl bg-surface-container">
-            <div ref={trackRef} className="absolute inset-0">
+            <motion.div
+              className="absolute inset-0"
+              animate={{ y: -hoveredIndex * CURSOR_SIZE }}
+              transition={{ type: "tween", ease: [0.76, 0, 0.24, 1], duration: 0.4 }}
+            >
               {allItems.map((item) => (
                 <div
                   key={item.name}
@@ -170,7 +164,7 @@ export default function CocktailsPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>
@@ -219,13 +213,9 @@ export default function CocktailsPage() {
                     const displayIndex = (globalIdx + 1).toString().padStart(2, "0");
 
                     return (
-                      <motion.div
+                      <div
                         key={item.name}
                         id={slugify(item.name)}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.5 }}
                         className="group flex flex-col gap-4 scroll-mt-32"
                         onMouseEnter={(e) => {
                           e.stopPropagation();
@@ -264,7 +254,7 @@ export default function CocktailsPage() {
                             {item.ingredients}
                           </p>
                         </div>
-                      </motion.div>
+                      </div>
                     );
                   })}
                 </div>
