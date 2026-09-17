@@ -116,7 +116,7 @@ export function Footer() {
               Mentions Légales
             </Link>
             <Link
-              href="#"
+              href="/confidentialite"
               className="text-[10px] text-on-surface-variant hover:text-on-surface uppercase tracking-widest transition-colors"
             >
               Confidentialité
