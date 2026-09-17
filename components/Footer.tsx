@@ -110,7 +110,7 @@ export function Footer() {
           </p>
           <div className="flex gap-8">
             <Link
-              href="#"
+              href="/mentions-legales"
               className="text-[10px] text-on-surface-variant hover:text-on-surface uppercase tracking-widest transition-colors"
             >
               Mentions Légales
